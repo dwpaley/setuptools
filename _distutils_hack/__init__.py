@@ -56,7 +56,10 @@ def ensure_local_distutils():
 
     # check that submodules load as expected
     core = importlib.import_module('distutils.core')
-    assert '_distutils' in core.__file__, core.__file__
+    assert '_distutils' in core.__file__, """
+setuptools expected a local copy of distutils. This error may be caused by
+importing pip before setuptools. See github.com/pypa/setuptools/issues/3297 and
+consider setting SETUPTOOLS_USE_DISTUTILS='stdlib'."""
     assert 'setuptools._distutils.log' not in sys.modules
 
 

@@ -702,7 +702,16 @@ class Distribution(_Distribution):
         ignore_options = frozenset(ignore_options)
 
         if filenames is None:
-            filenames = self.find_config_files()
+            try:
+                filenames = self.find_config_files()
+            except KeyError as e:
+                msg = "There was an error when searching for distutils \
+configuration files. This may be caused by importing pip after setuptools. See \
+github.com/pypa/setuptools/issues/3297 and consider setting \
+SETUPTOOLS_USE_DISTUTILS='stdlib'."
+                e.args = e.args or ('',)
+                e.args += (msg,)
+                raise e
 
         if DEBUG:
             self.announce("Distribution.parse_config_files():")
